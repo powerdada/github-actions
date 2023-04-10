@@ -3,8 +3,6 @@ description: 'Docker BuildX action'
 inputs:
   container_name:
     description: identifier name for container
-  github_user:
-    description: user for github container registry
   github_token:
     description: token for github container registry
   environment:
@@ -23,7 +21,7 @@ runs:
       name: login to Github Container Registry
       shell: bash
       run: |
-        echo "${{ inputs.github_token }}" | docker login ghcr.io -u ${{ inputs.github_user }} --password-stdin
+        echo "${{ inputs.github_token }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
     - id: run
       name: run docker compose
       shell: bash

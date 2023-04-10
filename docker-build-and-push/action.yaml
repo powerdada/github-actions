@@ -15,7 +15,7 @@ runs:
 
   - name: Docker meta
     id: meta
-    uses: docker/metadata-action@v3
+    uses: docker/metadata-action@v4
     with:
       images: |
         ghcr.io/${{ github.repository_owner }}/${{ inputs.name }}
@@ -34,7 +34,7 @@ runs:
 
   - name: Build And Push
     id: build
-    uses: docker/build-push-action@v2
+    uses: docker/build-push-action@v4
     with:
       context: .
       file: Dockerfile
