@@ -7,6 +7,8 @@ inputs:
     description: Docker build arguments
     required: false
     default: ''
+  github_token:
+    description: Github Container Registry access
 runs:
   using: 'composite'
   steps:
@@ -28,7 +30,7 @@ runs:
     id: login
     shell: bash
     run: |
-      echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      echo "${{ inputs.github_token }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
   - name: Build And Push
     id: build
