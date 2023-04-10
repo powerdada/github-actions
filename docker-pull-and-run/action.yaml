@@ -1,6 +1,12 @@
 name: 'Docker Build Publish'
 description: 'Docker BuildX action'
 inputs:
+  container_name:
+    description: identifier name for container
+  github_user:
+    description: user for github container registry
+  github_token:
+    description: token for github container registry
   environment:
     description: environment name
   image:
@@ -17,13 +23,13 @@ runs:
       name: login to Github Container Registry
       shell: bash
       run: |
-        echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        echo "${{ inputs.github_token }}" | docker login ghcr.io -u ${{ inputs.github_user }} --password-stdin
     - id: run
       name: run docker compose
       shell: bash
       run: |
         docker pull {{ inputs.image }}
-        docker rm -f ${{ github.repository_name }} || true
-        docker run -d --name ${{ github.repository_name }} --env-file .github/environments/.env.${{ inputs.environment }} -p ${{ inputs.server_port }}:${{ inputs.app_port }} --restart unless-stopped {{ inputs.image }}
+        docker rm -f ${{ inputs.container_name }} || true
+        docker run -d --name ${{ inputs.container_name }} --env-file .github/environments/.env.${{ inputs.environment }} -p ${{ inputs.server_port }}:${{ inputs.app_port }} --restart unless-stopped {{ inputs.image }}
         docker system prune -a -f
     
