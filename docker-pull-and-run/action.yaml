@@ -1,0 +1,29 @@
+name: 'Docker Build Publish'
+description: 'Docker BuildX action'
+inputs:
+  environment:
+    description: environment name
+  image:
+    description: docker image URL
+  server_port:
+    description: server port opened by docker
+  app_port:
+    description: app port used in docker
+    default: '3000'
+runs:
+  using: 'composite'
+  steps:
+    - id: login
+      name: login to Github Container Registry
+      shell: bash
+      run: |
+        echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+    - id: run
+      name: run docker compose
+      shell: bash
+      run: |
+        docker pull {{ inputs.image }}
+        docker rm -f ${{ github.repository_name }} || true
+        docker run -d --name ${{ github.repository_name }} --env-file .github/environments/.env.${{ inputs.environment }} -p ${{ inputs.server_port }}:${{ inputs.app_port }} --restart unless-stopped {{ inputs.image }}
+        docker system prune -a -f
+    
