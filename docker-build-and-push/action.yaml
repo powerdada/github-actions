@@ -2,7 +2,11 @@ name: 'Docker Build Publish'
 description: 'Docker BuildX action'
 inputs:
   name:
-    description: Name of docker image build tag
+    description: docker image build tag
+    default: ${{ github.repository }}
+  registry:
+    description: docker registry
+    default: ghcr.io
   build-args:
     description: Docker build arguments
     required: false
@@ -17,7 +21,7 @@ runs:
     uses: docker/metadata-action@v4
     with:
       images: |
-        ghcr.io/${{ github.repository_owner }}/${{ inputs.name }}
+        ${{ inputs.registry }}/${{ inputs.name }}
       tags: |
         type=raw,value=latest
         type=ref,event=branch,suffix=-latest
@@ -44,4 +48,4 @@ runs:
 outputs:
   image_url:
     description: full docker image url
-    value: ${{ steps.build.outputs.imageid }}
+    value: ${{ inputs.registry }}/${{ inputs.name }}
