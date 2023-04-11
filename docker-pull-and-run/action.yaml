@@ -14,9 +14,18 @@ inputs:
   app_port:
     description: app port used in docker
     default: '3000'
+  additional_env:
+    description: additional environment variables
+    default: ''
 runs:
   using: 'composite'
   steps:
+    - id: env
+      name: create .env 
+      shell: bash
+      run: |
+        cat .github/environments/.env.${{ inputs.environment }} > .env
+        echo ${{ inputs.additional_env }} >> .env
     - id: login
       name: login to Github Container Registry
       shell: bash
@@ -28,6 +37,6 @@ runs:
       run: |
         docker pull {{ inputs.image }}
         docker rm -f ${{ inputs.container_name }} || true
-        docker run -d --name ${{ inputs.container_name }} --env-file .github/environments/.env.${{ inputs.environment }} -p ${{ inputs.server_port }}:${{ inputs.app_port }} --restart unless-stopped {{ inputs.image }}
+        docker run -d --name ${{ inputs.container_name }} --env-file .env -p ${{ inputs.server_port }}:${{ inputs.app_port }} --restart unless-stopped {{ inputs.image }}
         docker system prune -a -f
     
