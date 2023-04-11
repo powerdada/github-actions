@@ -48,4 +48,4 @@ runs:
 outputs:
   image_url:
     description: full docker image url
-    value: ${{ inputs.registry }}/${{ inputs.name }}
+    value: ${{ inputs.registry }}/${{ inputs.name }}:${{ steps.meta.outputs.version }}
