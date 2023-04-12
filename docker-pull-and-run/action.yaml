@@ -25,8 +25,7 @@ runs:
       shell: bash
       run: |
         cat .github/environments/.env.${{ inputs.environment }} > .env
-        echo "" >> .env
-        echo ${{ inputs.additional_env }} >> .env
+        echo -e "\n${{ inputs.additional_env }}" >> .env
     - id: login
       name: login to Github Container Registry
       shell: bash
