@@ -7,6 +7,9 @@ inputs:
   registry:
     description: docker registry
     default: ghcr.io
+  build-dir:
+    description: Docker build context
+    default: '.'
   build-args:
     description: Docker build arguments
     required: false
@@ -38,8 +41,8 @@ runs:
     name: Build And Push
     uses: docker/build-push-action@v4
     with:
-      context: .
-      file: Dockerfile
+      context: ${{ inputs.build-dir }}
+      file: ${{ inputs.build-dir }}/Dockerfile
       platforms: linux/amd64
       tags: ${{ steps.meta.outputs.tags }}
       push: true
