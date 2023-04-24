@@ -14,6 +14,10 @@ inputs:
     description: Docker build arguments
     required: false
     default: ''
+  build-contexts:
+    description: Additional Docker contexts
+    required: false
+    default: ''
   github_token:
     description: Github Container Registry access
 runs:
@@ -47,7 +51,7 @@ runs:
       tags: ${{ steps.meta.outputs.tags }}
       push: true
       build-args: ${{ inputs.build-args }}
-
+      build-contexts: ${{ inputs.build-contexts }}
 outputs:
   image_url:
     description: full docker image url
